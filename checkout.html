@@ -29,8 +29,11 @@
 
             <!-- // https://test.payu.in/_payment -->
             <!-- // https://secure.payu.in/_payment -->
-
-	<form action="https://secure.payu.in/_payment" id="payment_form" method="Post">
+        <script>
+            const config = require("./config");
+            <form action={config.production.action} id="payment_form" method="Post"/>
+            
+        </script>
     
 	<!-- Contains information of integration type. Consult to PayU for more details.//-->
 	<input type="hidden" id="udf5" name="udf5" value="PayUBiz_NODE_JS_KIT" />
@@ -157,7 +160,7 @@ $('#payment_form').bind('keyup blur', function(){
           }
         }); 
 });
-//-->
+
 </script>
 </body>
 </html>

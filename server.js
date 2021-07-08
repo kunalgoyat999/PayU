@@ -6,7 +6,7 @@ POST REQUEST to be posted to below mentioned PayU URLs:
 For PayU Test Server:
 POST URL: https://test.payu.in/_payment
 
-For PayU Production (LIVE) Server:
+For PayU Productio n (LIVE) Server:
 POST URL: https://secure.payu.in/_payment
 */
 var express = require("express");
@@ -16,6 +16,7 @@ var bodyParser = require("body-parser");
 var path = require("path");
 var crypto = require("crypto");
 var reqpost = require("request"); //required for verify payment
+const config = require("./config");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({ secret: "mcg001k", saveUninitialized: true, resave: true }));
@@ -26,10 +27,8 @@ app.set("views", __dirname);
 
 //Unique merchant key provided by PayU along with salt. Salt is used for Hash signature
 //calculation within application and must not be posted or transfered over internet.
-var key = "0j7zny"; //production key
-// var key = "oZ7oo9"; // development key
-var salt = "0bEORCg1"; //production key
-// var salt = "UkojH5TS"; // development key
+var key = config.production.key; // development key
+var salt = config.production.salt; // development key
 
 //Generate random txnid
 app.get("/", function (req, res) {
@@ -90,7 +89,7 @@ app.post("/", function (req, res) {
       data.udf5 +
       "||||||" +
       salt;
-    console.log("text", text);
+    // console.log("text", text);
     cryp.update(text);
     var hash = cryp.digest("hex");
     res.setHeader("Content-Type", "text/json");
@@ -161,7 +160,7 @@ app.post("/response.html", function (req, res) {
     msg =
       "Transaction Successful and Hash Verified...<br />Check Console Log for full response...";
 
-  console.log(req.body);
+  // console.log(req.body);
 
   //Verify Payment routine to double check payment
   var command = "verify_payment";
@@ -176,8 +175,7 @@ app.post("/response.html", function (req, res) {
 
   var options = {
     method: "POST",
-    // uri: "https://test.payu.in/merchant/postservice.php?form=2",
-    uri: "https://secure.payu.in/merchant/postservice.php?form=2",
+    uri: config.production.uri,
     form: {
       key: key,
       hash: vhash,
@@ -185,27 +183,30 @@ app.post("/response.html", function (req, res) {
       command: command,
     },
     headers: {
-      /* 'content-type': 'application/x-www-form-urlencoded' */
+      'content-type': 'application/x-www-form-urlencoded'
       // Is set automatically
     },
   };
 
   reqpost(options)
     .on("response", function (resp) {
-      console.log("STATUS:" + resp.statusCode);
-      resp.setEncoding("utf8");
+      // console.log("STATUS:" + resp.statusCode);
+      // resp.setEncoding("utf8");
       resp.on("data", function (chunk) {
-        console.log("chunk", chunk);
+        console.log("chunk", chunk,typeof chunk, Object(chunk));
+        // const a = []
+        // a.push(chunk);
+        // console.log('..................',Buffer.concat(a).toString());
 
         vdata = JSON.parse(chunk);
 
         if (vdata.status == "1") {
           details = vdata.transaction_details[txnid];
-          console.log(details["status"] + "   " + details["mihpayid"]);
+          // console.log(details["status"] + "   " + details["mihpayid"]);
           if (details["status"] == "success" && details["mihpayid"] == mihpayid)
             verified = "Yes";
           else verified = "No";
-          console.log("resp", resp);
+          // console.log("resp", resp);
           //   sendFile(__dirname + "/index.html");
           //   res.sendFile(__dirname + "/response.html", {
           //     txnid: txnid,
