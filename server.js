@@ -220,7 +220,8 @@ app.post("/response.html", function (req, res) {
           //     msg: msg,
           //     verified: verified,
           //   });
-
+          let str = resphash;
+          const token = str.substring(0, 40); // Returns "ell"
           res.send(`<!DOCTYPE html>
             <html>
               <head>
@@ -232,7 +233,7 @@ app.post("/response.html", function (req, res) {
                 <h2><span style="color:grey;"> 1) Copy this code <br/> 2) Go back to Telegram Bot <br/> 3) Type <span style="color:black;"><b>/validate </b> </span> <br/> 4) Then paste this token. </span></h2>
             
                 <form class = "">
-                 <input class = "form-control" type = "text" name = "amount" size = "150" value = ${resphash} readonly / >
+                 <input class = "form-control" type = "text" name = "amount" size = "50" value = ${token} readonly / >
                 </div>
                 </form>
                 <br/><br/>
