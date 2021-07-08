@@ -1,9 +1,10 @@
 module.exports = Object.freeze({
     production: {
-        uri : "https://secure.payu.in/merchant/postservice.php?form=2",
+        uri : "https://info.payu.in/merchant/postservice.php?form=1",
         key: "0j7zny",
         salt: "0bEORCg1",
-        action: "https://secure.payu.in/_payment"
+        action: "https://secure.payu.in/_payment",
+        mongodbURI: "mongodb+srv://kunal:MyPassword@newcluster.xiphf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
     },
     staging: {
         uri : "https://test.payu.in/merchant/postservice.php?form=2",

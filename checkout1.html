@@ -53,7 +53,7 @@
     <span class="text"><label>Amount:</label></span>
     <span>
 	<!-- Required - Transaction amount of float type. //-->
-	<input type="text" id="amount" name="amount" placeholder="Amount" value="1" readonly /></span>    
+	<input type="text" id="amount" name="amount" placeholder="Amount" value="40" readonly /></span>    
     </div>
     
     <div class="dv">
@@ -80,7 +80,7 @@
     	
     <div class="dv">
     <span class="text"><label>State</label></span>
-    <select class="form-control" id="inputState" required="true">
+    <select class="form-control" id="state" name="state" required="true">
                         <option value=""></option>
                         <option value="Andra Pradesh">Andra Pradesh</option>
                         <option value="Arunachal Pradesh">Arunachal Pradesh</option>
@@ -140,14 +140,14 @@
 <script type="text/javascript">
 $('#payment_form').bind('keyup blur', function(){
 	$.ajax({
-          url: 'http://localhost:3000',
+          url: 'http://localhost:3000/pay40',
           type: 'post',
           data: JSON.stringify({             
 			txnid: $('#txnid').val(),
 			amount: $('#amount').val(),
 		    productinfo: $('#productinfo').val(),
             firstname: $('#firstname').val(),
-			email: $('#email').val(),		
+			email: $('#email').val(),
 			udf5: $('#udf5').val()
           }),
 		  contentType: "application/json",

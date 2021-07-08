@@ -1,0 +1,164 @@
+<html >
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Trabko Solutions</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+</head>
+<style type="text/css">
+	.main {
+		margin-left:30px;
+		font-family:Verdana, Geneva, sans-serif, serif;
+	}
+	.text {
+		float:left;
+		width:180px;
+	}
+	.dv {
+		margin-bottom:5px;
+	}
+</style>
+<body>
+<div class="main">
+    <div>
+    	<h3>Trabko Solutions</h3>
+    </div>
+	<!--// Form with required parameters to be posted to Payment Gateway. For details of each required 
+			parameters refer Integration PDF. //-->
+
+            <!-- // https://test.payu.in/_payment -->
+            <!-- // https://secure.payu.in/_payment -->
+
+    <form action="https://secure.payu.in/_payment" id="payment_form" method="Post">
+    
+	<!-- Contains information of integration type. Consult to PayU for more details.//-->
+	<input type="hidden" id="udf5" name="udf5" value="PayUBiz_NODE_JS_KIT" />
+    
+	<!-- Required - Response callback url to be used by Payment Gateway to post back payment status. 
+			surl - for success tranction, furl - for failure transaction, curl - for cancel transaction. //-->
+	<input type="hidden" id="surl" name="surl" value="http://localhost:3000/response.html" />
+	<input type="hidden" id="furl" name="furl" value="http://localhost:3000/response.html" />
+    <input type="hidden" id="curl" name="curl" value="http://localhost:3000/response.html" />
+	<input type="hidden" id="key" name="key" value="<%= key %>" />
+    <div class="dv">
+    <span class="text"><label>Transaction/Order ID:</label></span>
+    <span>
+	<!-- Required - Unique transaction id or order id to identify and match 
+				payment with local invoicing. Datatype is Varchar with a limit of 25 char. //-->
+	<input type="text" id="txnid" name="txnid" placeholder="Transaction ID" value="<%= orderid %>" readonly/></span>
+    </div>
+    
+    <div class="dv">
+    <span class="text"><label>Amount:</label></span>
+    <span>
+	<!-- Required - Transaction amount of float type. //-->
+	<input type="text" id="amount" name="amount" placeholder="Amount" value="100" readonly /></span>    
+    </div>
+    
+    <div class="dv">
+    <span class="text"><label></label></span>
+    <span>
+	<!-- Required - Purchased product/item description or SKUs for future reference. 
+				Datatype is Varchar with 100 char limit. //-->
+	<input type="hidden" id="productinfo" name="productinfo" placeholder="Product Info" value="P01,P02" /></span>
+    </div>
+    
+    <div class="dv">
+    <span class="text"><label>First Name</label></span>
+    <span>
+	<!-- Required - Should contain first name of the consumer. Datatype is Varchar with 60 char limit. //-->
+	<input type="text" id="firstname" name="firstname" required="true" placeholder="First Name" value="" /></span>
+    </div>
+	
+    <div class="dv">
+    <span class="text"><label>Email Id</label></span>
+    <span>
+	<!-- Required - An email id in valid email format has to be posted. Datatype is Varchar with 50 char limit. //-->
+	<input type="text" id="email" name="email" required="true" placeholder="Email ID" value="" /></span>
+    </div>
+    	
+    <div class="dv">
+    <span class="text"><label>State</label></span>
+    <select class="form-control" id="state" name="state" required="true">
+                        <option value=""></option>
+                        <option value="Andra Pradesh">Andra Pradesh</option>
+                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                        <option value="Assam">Assam</option>
+                        <option value="Bihar">Bihar</option>
+                        <option value="Chhattisgarh">Chhattisgarh</option>
+                        <option value="Goa">Goa</option>
+                        <option value="Gujarat">Gujarat</option>
+                        <option value="Haryana">Haryana</option>
+                        <option value="Himachal Pradesh">Himachal Pradesh</option>
+                        <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                        <option value="Jharkhand">Jharkhand</option>
+                        <option value="Karnataka">Karnataka</option>
+                        <option value="Kerala">Kerala</option>
+                        <option value="Madya Pradesh">Madya Pradesh</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Manipur">Manipur</option>
+                        <option value="Meghalaya">Meghalaya</option>
+                        <option value="Mizoram">Mizoram</option>
+                        <option value="Nagaland">Nagaland</option>
+                        <option value="Orissa">Orissa</option>
+                        <option value="Punjab">Punjab</option>
+                        <option value="Rajasthan">Rajasthan</option>
+                        <option value="Sikkim">Sikkim</option>
+                        <option value="Tamil Nadu">Tamil Nadu</option>
+                        <option value="Telangana">Telangana</option>
+                        <option value="Tripura">Tripura</option>
+                        <option value="Uttaranchal">Uttaranchal</option>
+                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                        <option value="West Bengal">West Bengal</option>
+                        <option disabled style="background-color:#aaa; color:#fff">UNION Territories</option>
+                        <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                        <option value="Chandigarh">Chandigarh</option>
+                        <option value="Dadar and Nagar Haveli">Dadar and Nagar Haveli</option>
+                        <option value="Daman and Diu">Daman and Diu</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Lakshadeep">Lakshadeep</option>
+                        <option value="Pondicherry">Pondicherry</option>
+                      </select>
+</div>
+    </div>
+	
+    <div class="dv">
+    <span class="text"><label></label></span>
+    <span>
+	<!-- Required - Hash signature generated based on mandatory 
+				parameter values. Refer kit's code for more details. //-->
+	<input type="text" id="hash" name="hash" placeholder="Hash" value="" hidden="true" /></span>
+    </div>
+    <div id="alertinfo" class="dv"></div>
+    
+    <div><input type="submit" value="Pay" /></div>
+	</form>
+</div>
+<!-- Below script is just for using Hash calculation routine. In live integrations different workflows may be used
+	to access Hash calculation routine. //-->
+<script type="text/javascript">
+$('#payment_form').bind('keyup blur', function(){
+	$.ajax({
+          url: 'http://localhost:3000/pay100',
+          type: 'post',
+          data: JSON.stringify({             
+			txnid: $('#txnid').val(),
+			amount: $('#amount').val(),
+		    productinfo: $('#productinfo').val(),
+            firstname: $('#firstname').val(),
+			email: $('#email').val(),
+			udf5: $('#udf5').val()
+          }),
+		  contentType: "application/json",
+          dataType: 'json',
+          success: function(json) {            
+			$('#hash').val(json);            
+          }
+        }); 
+});
+
+</script>
+</body>
+</html>
+	
