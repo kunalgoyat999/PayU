@@ -30,6 +30,7 @@
             <!-- // https://test.payu.in/_payment -->
             <!-- // https://secure.payu.in/_payment -->
 
+    <!-- <form action="https://test.payu.in/_payment" id="payment_form" method="Post"> -->
     <form action="https://secure.payu.in/_payment" id="payment_form" method="Post">
     
 	<!-- Contains information of integration type. Consult to PayU for more details.//-->
@@ -37,6 +38,9 @@
     
 	<!-- Required - Response callback url to be used by Payment Gateway to post back payment status. 
 			surl - for success tranction, furl - for failure transaction, curl - for cancel transaction. //-->
+	<!-- <input type="hidden" id="surl" name="surl" value="http://localhost:3000/response.html" />
+	<input type="hidden" id="furl" name="furl" value="http://localhost:3000/response.html" />
+    <input type="hidden" id="curl" name="curl" value="http://localhost:3000/response.html" /> -->
 	<input type="hidden" id="surl" name="surl" value="https://trabko.com/response.html" />
 	<input type="hidden" id="furl" name="furl" value="https://trabko.com/response.html" />
     <input type="hidden" id="curl" name="curl" value="https://trabko.com/response.html" />
@@ -140,6 +144,7 @@
 <script type="text/javascript">
 $('#payment_form').bind('keyup blur', function(){
 	$.ajax({
+        //   url: 'http://localhost:3000/pay40',
           url: 'https://trabko.com/pay40',
           type: 'post',
           data: JSON.stringify({             

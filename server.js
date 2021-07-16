@@ -7,8 +7,8 @@ var crypto = require("crypto");
 var request = require("request"); //required for verify payment
 const config = require("./config");
 
-const async = require('async')
-const MongoClient = require('mongodb').MongoClient;
+const async = require("async");
+const MongoClient = require("mongodb").MongoClient;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({ secret: "mcg001k", saveUninitialized: true, resave: true }));
@@ -18,9 +18,12 @@ app.set("view engine", "html");
 app.set("views", __dirname);
 
 const uri = config.production.mongodbURI;
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-var key = config.production.key; // development key
-var salt = config.production.salt; // development key
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+var key = config.production.key; // production key
+var salt = config.production.salt; // production key
 
 //Generate random txnid
 app.get("/pay40", function (req, res) {
@@ -64,9 +67,7 @@ app.post("/pay40", function (req, res) {
   });
 });
 
-
-
-app.post("/response.html",async function (req, res) {
+app.post("/response.html", async function (req, res) {
   var verified = "No";
   var txnid = req.body.txnid;
   var amount = req.body.amount;
@@ -81,7 +82,7 @@ app.post("/response.html",async function (req, res) {
   var mode = req.body.mode;
   var state = req.body.state;
   var additionalcharges = "";
-  console.log('here is body', req.body)
+  console.log("here is body", req.body);
   //Calculate response hash to verify
   var keyString =
     key +
@@ -112,10 +113,12 @@ app.post("/response.html",async function (req, res) {
   cryp.update(reverseKeyString);
   var calchash = cryp.digest("hex");
 
-  var msg = "Payment failed for Hash not verified...<br />Check Console Log for full response...";
+  var msg =
+    "Payment failed for Hash not verified...<br />Check Console Log for full response...";
   //Comapre status and hash. Hash verification is mandatory.
   if (calchash == resphash) {
-    msg = "Transaction Successful and Hash Verified...<br />Check Console Log for full response...";
+    msg =
+      "Transaction Successful and Hash Verified...<br />Check Console Log for full response...";
   }
 
   //Verify Payment routine to double check payment
@@ -134,47 +137,52 @@ app.post("/response.html",async function (req, res) {
       hash: vhash,
       var1: txnid,
       command: command,
-    }
+    },
   };
 
   // if isTrue ture means his transection is successfully completed.
-  let isTrue
-
+  let isTrue;
 
   await request(options, (error, res, body) => {
     if (error) {
-      return console.error('upload failed:', error);
+      return console.error("upload failed:", error);
     }
-    
-    if (res.statusCode == 200) {          
-      return isTrue = true;          
+
+    if (res.statusCode == 200) {
+      return (isTrue = true);
     }
   });
 
-  if(status === 'success'){
+  if (status === "success") {
     let str = resphash;
     const token = str.substring(0, 40);
-  
-    client.connect( async err => {
+
+    client.connect(async (err) => {
       const collection = client.db("paymentTokens").collection("devices");
       // perform actions on the collection object
-      const isTxnExist = await collection.findOne({TXNID: token});
-      if (!isTxnExist){
-        await collection.insertOne({TXNID: token, emailTransactionID: txnid, TXNAMOUNT: amount, PAYMENTMODE: mode , TXNDATE: txnDate, QUESTIONS: 12})
+      const isTxnExist = await collection.findOne({ TXNID: token });
+      if (!isTxnExist) {
+        await collection.insertOne({
+          TXNID: token,
+          emailTransactionID: txnid,
+          TXNAMOUNT: amount,
+          PAYMENTMODE: mode,
+          TXNDATE: txnDate,
+          QUESTIONS: 12,
+        });
       }
-      
+
       const collection2 = client.db("paymentTokens").collection("userDetails");
-      const isEmailExist = await collection2.findOne({email});
-      console.log('is email', isEmailExist)
-      if (!isEmailExist){
+      const isEmailExist = await collection2.findOne({ email });
+      console.log("is email", isEmailExist);
+      if (!isEmailExist) {
         // perform actions on the collection object
-        await collection2.insertOne({name: firstname, email, state})
-      };
+        await collection2.insertOne({ name: firstname, email, state });
+      }
     });
-  
+
     setTimeout(() => {
-      if(isTrue) { 
-  
+      if (isTrue) {
         res.send(`<!DOCTYPE html>
         <html>
           <head>
@@ -192,8 +200,7 @@ app.post("/response.html",async function (req, res) {
             <br/><br/>
             <p> <b>Note: </b> Give space between /validate and token.
           </body>
-        </html>`)
-  
+        </html>`);
       } else {
         return res.send(`<!DOCTYPE html>
         <html lang="en">
@@ -223,12 +230,11 @@ app.post("/response.html",async function (req, res) {
         </body>
         </html>`);
   }
-
 });
 
-/************************************************************************
- * 100 rupees page request 
-*/
+/******************************************************************************************************
+ * 100 rupees page request
+ */
 
 //Generate random txnid
 app.get("/pay100", function (req, res) {
@@ -272,8 +278,7 @@ app.post("/pay100", function (req, res) {
   });
 });
 
-
-app.post("/response2.html",async function (req, res) {
+app.post("/response.html", async function (req, res) {
   var verified = "No";
   var txnid = req.body.txnid;
   var amount = req.body.amount;
@@ -288,7 +293,8 @@ app.post("/response2.html",async function (req, res) {
   var mode = req.body.mode;
   var state = req.body.state;
   var additionalcharges = "";
-  console.log('here is body', req.body)
+  console.log("here is body", req.body);
+
   //Calculate response hash to verify
   var keyString =
     key +
@@ -319,10 +325,12 @@ app.post("/response2.html",async function (req, res) {
   cryp.update(reverseKeyString);
   var calchash = cryp.digest("hex");
 
-  var msg = "Payment failed for Hash not verified...<br />Check Console Log for full response...";
+  var msg =
+    "Payment failed for Hash not verified...<br />Check Console Log for full response...";
   //Comapre status and hash. Hash verification is mandatory.
   if (calchash == resphash) {
-    msg = "Transaction Successful and Hash Verified...<br />Check Console Log for full response...";
+    msg =
+      "Transaction Successful and Hash Verified...<br />Check Console Log for full response...";
   }
 
   //Verify Payment routine to double check payment
@@ -341,47 +349,52 @@ app.post("/response2.html",async function (req, res) {
       hash: vhash,
       var1: txnid,
       command: command,
-    }
+    },
   };
 
   // if isTrue ture means his transection is successfully completed.
-  let isTrue
-
+  let isTrue;
 
   await request(options, (error, res, body) => {
     if (error) {
-      return console.error('upload failed:', error);
+      return console.error("upload failed:", error);
     }
-    
-    if (res.statusCode == 200) {          
-      return isTrue = true;          
+
+    if (res.statusCode == 200) {
+      return (isTrue = true);
     }
   });
 
-  if(status === 'success'){
+  if (status === "success") {
     let str = resphash;
     const token = str.substring(0, 40);
-  
-    client.connect( async err => {
+
+    client.connect(async (err) => {
       const collection = client.db("paymentTokens").collection("devices");
       // perform actions on the collection object
-      const isTxnExist = await collection.findOne({TXNID: token});
-      if (!isTxnExist){
-        await collection.insertOne({TXNID: token, emailTransactionID: txnid, TXNAMOUNT: amount, PAYMENTMODE: mode , TXNDATE: txnDate, QUESTIONS: 30})
+      const isTxnExist = await collection.findOne({ TXNID: token });
+      if (!isTxnExist) {
+        await collection.insertOne({
+          TXNID: token,
+          emailTransactionID: txnid,
+          TXNAMOUNT: amount,
+          PAYMENTMODE: mode,
+          TXNDATE: txnDate,
+          QUESTIONS: 30,
+        });
       }
-      
+
       const collection2 = client.db("paymentTokens").collection("userDetails");
-      const isEmailExist = await collection2.findOne({email});
-      console.log('is email', isEmailExist)
-      if (!isEmailExist){
+      const isEmailExist = await collection2.findOne({ email });
+      console.log("is email", isEmailExist);
+      if (!isEmailExist) {
         // perform actions on the collection object
-        await collection2.insertOne({name: firstname, email, state})
-      };
+        await collection2.insertOne({ name: firstname, email, state });
+      }
     });
-  
+
     setTimeout(() => {
-      if(isTrue) { 
-  
+      if (isTrue) {
         res.send(`<!DOCTYPE html>
         <html>
           <head>
@@ -399,8 +412,7 @@ app.post("/response2.html",async function (req, res) {
             <br/><br/>
             <p> <b>Note: </b> Give space between /validate and token.
           </body>
-        </html>`)
-  
+        </html>`);
       } else {
         return res.send(`<!DOCTYPE html>
         <html lang="en">
@@ -428,10 +440,8 @@ app.post("/response2.html",async function (req, res) {
         <body>
             <h1>Payment Failded !!!</h1>
         </body>
-        </html>`
-      );
+        </html>`);
   }
-
 });
 
 app.listen(3000);
