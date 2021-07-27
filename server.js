@@ -278,7 +278,7 @@ app.post("/pay100", function (req, res) {
   });
 });
 
-app.post("/response.html", async function (req, res) {
+app.post("/response2.html", async function (req, res) {
   var verified = "No";
   var txnid = req.body.txnid;
   var amount = req.body.amount;
